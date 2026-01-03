@@ -1,0 +1,910 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="EcoWaste - Resident Dashboard">
+    <title>Resident Dashboard - EcoWaste</title>
+
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap"
+        rel="stylesheet">
+
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <!-- Custom Styles -->
+    <link rel="stylesheet" href="styles.css">
+</head>
+
+<body>
+    <!-- Alert Container -->
+    <div id="alert-container" style="position: fixed; top: 20px; right: 20px; z-index: 9999; max-width: 400px;"></div>
+
+    <!-- Navigation Bar -->
+    <nav class="navbar">
+        <div class="container navbar-container">
+            <a href="index.html" class="navbar-brand">
+                <i class="fas fa-recycle"></i>
+                EcoWaste
+            </a>
+            <ul class="navbar-menu">
+                <li><a href="#" class="navbar-link active">Dashboard</a></li>
+                <li><a href="#" onclick="openReportModal(); return false;" class="navbar-link">Report Issue</a></li>
+                <li><a href="collection-schedule.html" class="navbar-link">Schedule</a></li>
+                <li>
+                    <a href="#" onclick="logout(); return false;" class="btn btn-sm btn-danger"
+                        style="color: white; padding: 0.5rem 1rem;">
+                        <i class="fas fa-sign-out-alt"></i> Logout
+                    </a>
+                </li>
+            </ul>
+        </div>
+    </nav>
+
+    <!-- Dashboard Content -->
+    <section class="section" style="padding-top: 100px; min-height: 100vh; background-color: var(--color-background);">
+        <div class="container">
+            <!-- Welcome Header -->
+            <div
+                style="margin-bottom: var(--spacing-xl); display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: var(--spacing-md);">
+                <div>
+                    <h1 style="font-size: 2rem; margin-bottom: var(--spacing-xs);">Welcome back, <span
+                            id="user-welcome-name">Resident</span>!</h1>
+                    <p style="color: var(--color-text-secondary);">Here's what's happening in your area</p>
+                </div>
+                <button onclick="openReportModal()" class="btn btn-primary">
+                    <i class="fas fa-plus"></i> Report Issue
+                </button>
+            </div>
+
+            <!-- Stats & Widgets Row (Horizontal Grid) -->
+            <!-- Live Truck Notification Banner -->
+            <div
+                style="background: linear-gradient(to right, rgba(46, 204, 113, 0.1), rgba(255, 255, 255, 0.8)); border-left: 5px solid var(--color-success); padding: var(--spacing-md); border-radius: var(--radius-md); margin-bottom: var(--spacing-lg); display: flex; justify-content: space-between; align-items: center; box-shadow: var(--shadow-sm);">
+                <div style="display: flex; align-items: center; gap: var(--spacing-md);">
+                    <div
+                        style="background: var(--color-surface); padding: 10px; border-radius: 50%; box-shadow: var(--shadow-sm);">
+                        <i class="fas fa-truck-pickup" style="color: var(--color-primary); font-size: 1.5rem;"></i>
+                    </div>
+                    <div>
+                        <h3 style="margin: 0; font-size: 1.1rem; display: flex; align-items: center;">
+                            <span class="live-indicator"></span> Collection Truck Nearby
+                        </h3>
+                        <p style="margin: 0; color: var(--color-text-secondary); font-size: 0.95rem;">
+                            Currently at <strong id="truck-location">North District Main Rd</strong> • <span
+                                id="truck-eta">Arriving in ~12 mins</span>
+                        </p>
+                    </div>
+                </div>
+                <button class="btn btn-sm btn-outline" onclick="alert('Viewing live map... (Simulated)')">
+                    View on Map
+                </button>
+            </div>
+
+            <div class="grid grid-4" style="margin-bottom: var(--spacing-lg);">
+                <!-- 1. EcoPoints Card -->
+                <div class="stat-card" style="margin-bottom: 0;">
+                    <div
+                        style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: var(--spacing-md);">
+                        <div>
+                            <h3 style="font-size: 2.5rem; margin: 0; line-height: 1;">
+                                <span id="user-points">0</span>
+                            </h3>
+                            <p style="margin: 0; opacity: 0.9;">EcoPoints</p>
+                        </div>
+                        <div style="text-align: right;">
+                            <div style="font-size: 0.9rem; margin-bottom: 4px;" id="user-level">Eco Beginner</div>
+                            <i class="fas fa-medal" style="font-size: 2rem; opacity: 0.8;"></i>
+                        </div>
+                    </div>
+
+                    <!-- Progress to next level -->
+                    <div
+                        style="background: rgba(0,0,0,0.2); border-radius: 10px; height: 8px; overflow: hidden; margin-bottom: 8px;">
+                        <div id="points-progress" style="background: rgba(255,255,255,0.9); height: 100%; width: 0%;">
+                        </div>
+                    </div>
+                    <div style="font-size: 0.8rem; display: flex; justify-content: space-between; opacity: 0.9;">
+                        <span>Next Reward</span>
+                        <span id="next-level-points">100 pts</span>
+                    </div>
+                </div>
+
+                <!-- 2. Leaderboard Widget -->
+                <div class="card"
+                    style="padding: 0; overflow: hidden; display: flex; flex-direction: column; height: 100%;">
+                    <div class="card-header"
+                        style="background-color: var(--color-surface); padding: var(--spacing-md); border-bottom: 1px solid var(--color-border);">
+                        <h3 style="font-size: 1.1rem; margin: 0; display: flex; align-items: center; gap: 8px;">
+                            <i class="fas fa-trophy" style="color: var(--color-warning);"></i> Top Residents
+                        </h3>
+                    </div>
+                    <div id="leaderboard-list" style="flex: 1; overflow-y: auto; max-height: 200px;">
+                        <!-- Populated by JS -->
+                        <div
+                            style="padding: var(--spacing-md); text-align: center; color: var(--color-text-secondary);">
+                            Loading leaderboard...
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 3. Quick Stats -->
+                <div class="card" style="padding: 0; overflow: hidden; height: 100%;">
+                    <div class="card-header"
+                        style="background-color: var(--color-surface); padding: var(--spacing-md);">
+                        <h3 style="font-size: 1.1rem; margin: 0;">Quick Stats</h3>
+                    </div>
+                    <div style="padding: var(--spacing-md);">
+                        <div
+                            style="display: flex; justify-content: space-between; margin-bottom: 12px; font-size: 1.1rem;">
+                            <span>Active Reports</span>
+                            <span style="font-weight: 600; color: var(--color-warning);"
+                                id="active-reports-count">0</span>
+                        </div>
+                        <div style="display: flex; justify-content: space-between; font-size: 1.1rem;">
+                            <span>Resolved Issues</span>
+                            <span style="font-weight: 600; color: var(--color-success);"
+                                id="total-resolved-count">0</span>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+
+            <!-- 4. Quick Actions -->
+            <div class="card" style="padding: 0; overflow: hidden; height: 100%; margin-bottom: var(--spacing-xl);">
+                <div class="card-header" style="background-color: var(--color-surface); padding: var(--spacing-md);">
+                    <h3 style="font-size: 1.1rem; margin: 0;">Quick Actions</h3>
+                </div>
+                <div style="display: flex; flex-direction: column;">
+                    <a href="#" onclick="openReportModal(); return false;"
+                        style="padding: var(--spacing-md); display: flex; align-items: center; gap: var(--spacing-md); color: var(--color-text-primary); text-decoration: none; border-bottom: 1px solid var(--color-border); transition: background 0.2s;">
+                        <div
+                            style="width: 36px; height: 36px; background-color: rgba(46, 204, 113, 0.1); border-radius: 8px; display: flex; align-items: center; justify-content: center; color: var(--color-primary);">
+                            <i class="fas fa-camera"></i>
+                        </div>
+                        <div>
+                            <div style="font-weight: 600;">Report Waste</div>
+                        </div>
+                    </a>
+
+                    <a href="#" onclick="openSmartScanner(); return false;"
+                        style="padding: var(--spacing-md); display: flex; align-items: center; gap: var(--spacing-md); color: var(--color-text-primary); text-decoration: none; border-bottom: 1px solid var(--color-border); transition: background 0.2s;">
+                        <div
+                            style="width: 36px; height: 36px; background-color: rgba(155, 89, 182, 0.1); border-radius: 8px; display: flex; align-items: center; justify-content: center; color: #9b59b6;">
+                            <i class="fas fa-magic"></i>
+                        </div>
+                        <div>
+                            <div style="font-weight: 600;">AI Smart Sort</div>
+                            <div style="font-size: 0.8rem; color: var(--color-text-secondary);">Unsure identified?</div>
+                        </div>
+                    </a>
+
+                    <a href="collection-schedule.html"
+                        style="padding: var(--spacing-md); display: flex; align-items: center; gap: var(--spacing-md); color: var(--color-text-primary); text-decoration: none; transition: background 0.2s;">
+                        <div
+                            style="width: 36px; height: 36px; background-color: rgba(52, 152, 219, 0.1); border-radius: 8px; display: flex; align-items: center; justify-content: center; color: var(--color-info);">
+                            <i class="fas fa-calendar-alt"></i>
+                        </div>
+                        <div>
+                            <div style="font-weight: 600;">Check Schedule</div>
+                        </div>
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <!-- Main Content Grid (Feed + Profile) - Centered with Reduced Width -->
+        <div style="max-width: 900px; margin: 0 auto; margin-top: var(--spacing-xl);">
+            <div
+                style="display: grid; grid-template-columns: 1fr 1fr; gap: var(--spacing-lg); margin-bottom: var(--spacing-lg);">
+
+                <!-- Activity Feed -->
+                <div class="main-content">
+                    <div class="card" style="padding: var(--spacing-lg); text-align: center;">
+                        <!-- Centered Icon -->
+                        <div style="margin-bottom: var(--spacing-md);">
+                            <i class="fas fa-clipboard-list" style="font-size: 3rem; color: var(--color-primary);"></i>
+                        </div>
+
+                        <!-- Centered Heading -->
+                        <h3 class="card-title" style="text-align: center; margin-bottom: var(--spacing-md);">My Activity
+                        </h3>
+
+                        <!-- Horizontal Divider -->
+                        <hr
+                            style="border: none; border-top: 1px solid var(--color-border); margin-bottom: var(--spacing-md);">
+
+                        <!-- Filter Buttons -->
+                        <div
+                            style="display: flex; gap: var(--spacing-xs); justify-content: center; margin-bottom: var(--spacing-md);">
+                            <button class="filter-btn active" onclick="filterComplaints('all', this)">All</button>
+                            <button class="filter-btn" onclick="filterComplaints('Pending', this)">Pending</button>
+                            <button class="filter-btn" onclick="filterComplaints('Resolved', this)">Resolved</button>
+                        </div>
+
+                        <!-- Activity Feed Content -->
+                        <div id="activity-feed" style="text-align: left;">
+                            <!-- Populated by JS -->
+                            <div class="empty-state">
+                                <i class="fas fa-spinner fa-spin"
+                                    style="font-size: 2rem; color: var(--color-primary);"></i>
+                                <p style="margin-top: var(--spacing-md);">Loading activity...</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Profile Sidebar -->
+                <div class="profile-sidebar">
+                    <div class="card"
+                        style="width: 100%; padding: var(--spacing-lg); text-align: center; position: relative;">
+                        <!-- Edit Button -->
+                        <button onclick="openEditProfileModal()"
+                            style="position: absolute; top: 15px; right: 15px; background: rgba(26, 143, 32, 0.1); border: none; color: var(--color-primary); cursor: pointer; padding: 8px; border-radius: 50%; width: 32px; height: 32px; display: flex; align-items: center; justify-content: center; transition: all 0.2s;">
+                            <i class="fas fa-edit"></i>
+                        </button>
+
+                        <!-- Centered Icon -->
+                        <div style="margin-bottom: var(--spacing-md);">
+                            <i class="fas fa-user-circle" style="font-size: 3rem; color: var(--color-primary);"></i>
+                        </div>
+
+                        <!-- Centered Heading -->
+                        <h3 id="profile-name"
+                            style="text-align: center; margin-bottom: var(--spacing-xs); font-size: 1.5rem;">User Name
+                        </h3>
+                        <p id="profile-username"
+                            style="color: var(--color-text-secondary); margin-bottom: var(--spacing-sm); text-align: center;">
+                            @username</p>
+
+                        <!-- Horizontal Divider -->
+                        <hr
+                            style="border: none; border-top: 1px solid var(--color-border); margin-bottom: var(--spacing-md);">
+
+                        <!-- Badge -->
+                        <div class="badge badge-resolved"
+                            style="display: inline-flex; margin-bottom: var(--spacing-md);">
+                            <i class="fas fa-check-circle"></i> Verified Resident
+                        </div>
+
+                        <div class="profile-stats-row">
+                            <div class="stat-item">
+                                <div class="stat-value" id="member-since">Jan 2026</div>
+                                <div class="stat-label">Joined</div>
+                            </div>
+                            <div class="stat-item">
+                                <div class="stat-value" style="color: var(--color-primary);">Resident</div>
+                                <div class="stat-label">Account</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        </div> <!-- Close centered wrapper -->
+    </section>
+
+    <!-- Report Issue Modal -->
+    <div id="report-modal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 style="margin: 0; display: flex; align-items: center; gap: var(--spacing-sm);">
+                    <i class="fas fa-exclamation-circle" style="color: var(--color-warning);"></i> Report Issue
+                </h3>
+                <button class="close-modal" onclick="closeReportModal()">&times;</button>
+            </div>
+            <div class="modal-body">
+                <form id="complaint-form">
+                    <div class="form-group">
+                        <label for="location" class="form-label">Location *</label>
+                        <select id="location" class="form-select" required>
+                            <option value="">Select Area</option>
+                            <option value="Downtown">Downtown</option>
+                            <option value="North District">North District</option>
+                            <option value="South District">South District</option>
+                            <option value="East District">East District</option>
+                            <option value="West District">West District</option>
+                            <option value="Suburban Area">Suburban Area</option>
+                            <option value="Industrial Zone">Industrial Zone</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="waste-type" class="form-label">Waste Type *</label>
+                        <select id="waste-type" class="form-select" required>
+                            <option value="">Select Waste Type</option>
+                            <option value="Biodegradable">Biodegradable (Organic)</option>
+                            <option value="Non-Biodegradable">Non-Biodegradable</option>
+                            <option value="Recyclable">Recyclable</option>
+                            <option value="Hazardous">Hazardous</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="description" class="form-label">Description *</label>
+                        <textarea id="description" class="form-input" rows="4" placeholder="Describe the issue..."
+                            required></textarea>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label">Photo Evidence (Optional)</label>
+                        <div class="file-upload" onclick="document.getElementById('photo').click()"
+                            style="border: 2px dashed var(--color-border); padding: var(--spacing-lg); text-align: center; border-radius: var(--radius-md); cursor: pointer; transition: all 0.2s;">
+                            <input type="file" id="photo" accept="image/*" style="display: none"
+                                onchange="previewImage(this)">
+                            <div id="image-preview-container">
+                                <i class="fas fa-cloud-upload-alt"
+                                    style="font-size: 2rem; color: var(--color-text-secondary); margin-bottom: var(--spacing-sm);"></i>
+                                <p style="color: var(--color-text-secondary); margin: 0;">Click to upload photo</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <button type="submit" class="btn btn-primary" style="width: 100%;">Submit Report</button>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Edit Profile Modal -->
+    <div id="profile-modal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 style="margin: 0;">Edit Profile</h3>
+                <button class="close-modal" onclick="closeProfileModal()">&times;</button>
+            </div>
+            <div class="modal-body">
+                <form id="profile-form">
+                    <div class="form-group">
+                        <label for="edit-fullname" class="form-label">Full Name</label>
+                        <input type="text" id="edit-fullname" class="form-input" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="edit-email" class="form-label">Email</label>
+                        <input type="email" id="edit-email" class="form-input" required>
+                    </div>
+
+                    <div
+                        style="margin-top: var(--spacing-lg); padding-top: var(--spacing-md); border-top: 1px solid var(--color-border);">
+                        <h4 style="margin-bottom: var(--spacing-md);">Change Password</h4>
+                        <div class="form-group">
+                            <label for="current-password" class="form-label">Current Password</label>
+                            <input type="password" id="current-password" class="form-input">
+                        </div>
+                        <div class="form-group">
+                            <label for="new-password" class="form-label">New Password</label>
+                            <input type="password" id="new-password" class="form-input">
+                        </div>
+                    </div>
+
+                    <button type="submit" class="btn btn-primary"
+                        style="width: 100%; margin-top: var(--spacing-md);">Save Changes</button>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Smart Scanner Modal -->
+    <div id="scanner-modal" class="modal">
+        <div class="modal-content" style="max-width: 500px;">
+            <div class="modal-header">
+                <h3 style="margin: 0; display: flex; align-items: center; gap: var(--spacing-sm);">
+                    <i class="fas fa-magic" style="color: #9b59b6;"></i> AI Smart Sort
+                </h3>
+                <button class="close-modal" onclick="closeScannerModal()">&times;</button>
+            </div>
+            <div class="modal-body">
+                <p style="margin-bottom: var(--spacing-md);">Upload a photo of your waste item, and our AI will tell
+                    you which bin it belongs to.</p>
+
+                <div class="file-upload" onclick="document.getElementById('scan-photo').click()"
+                    style="border: 2px dashed #9b59b6; padding: var(--spacing-lg); text-align: center; border-radius: var(--radius-md); cursor: pointer; transition: all 0.2s; position: relative; min-height: 250px; display: flex; flex-direction: column; justify-content: center; align-items: center;">
+
+                    <input type="file" id="scan-photo" accept="image/*" style="display: none"
+                        onchange="handleScanImage(this)">
+
+                    <div id="scan-preview" style="display: block;">
+                        <i class="fas fa-camera"
+                            style="font-size: 3rem; color: #9b59b6; opacity: 0.5; margin-bottom: var(--spacing-sm);"></i>
+                        <p style="color: var(--color-text-secondary); margin: 0;">Tap to Scan Item</p>
+                    </div>
+
+                    <img id="scan-img-display" src=""
+                        style="max-width: 100%; max-height: 220px; display: none; border-radius: var(--radius-sm); object-fit: contain;">
+
+                    <!-- Scanning Animation Overlay -->
+                    <div id="scanner-overlay" class="scanner-overlay">
+                        <div class="scanner-line"></div>
+                    </div>
+                </div>
+
+                <div id="scan-result" class="result-card">
+                    <h4 id="scan-item-name" style="margin-bottom: 4px; color: var(--color-success);">Processing...</h4>
+                    <p style="margin-bottom: 8px;">Confidence: <span id="scan-confidence">--%</span></p>
+                    <div
+                        style="background: white; padding: 10px; border-radius: 8px; display: flex; align-items: center; gap: 10px;">
+                        <i class="fas fa-trash-alt" style="font-size: 1.2rem; color: var(--color-text-secondary);"></i>
+                        <div>
+                            <strong>Recommended Bin:</strong>
+                            <div id="scan-bin" style="color: var(--color-success); font-weight: bold;">--</div>
+                        </div>
+                    </div>
+                    <p style="margin-top: 10px; font-size: 0.9rem; color: var(--color-text-secondary);">
+                        <i class="fas fa-info-circle"></i> <span id="scan-tip">Tip: Ensure item is clean.</span>
+                    </p>
+                </div>
+
+                <button id="scan-action-btn" class="btn btn-primary" onclick="resetScanner()"
+                    style="width: 100%; margin-top: var(--spacing-md); display: none;">Scan Another Item</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Scripts -->
+    <script src="app.js"></script>
+    <script>
+        // Check authentication
+        const currentUser = requireAuth('resident');
+
+        let userComplaints = [];
+        let currentFilter = 'all';
+
+        // Initialize dashboard
+        document.addEventListener('DOMContentLoaded', function () {
+            loadUserProfile();
+            loadUserComplaints();
+            loadLeaderboard();
+
+            // Add click listeners to close modals when clicking outside
+            window.addEventListener('click', function (event) {
+                const reportModal = document.getElementById('report-modal');
+                const profileModal = document.getElementById('profile-modal');
+                const scannerModal = document.getElementById('scanner-modal');
+                if (event.target == reportModal) closeReportModal();
+                if (event.target == profileModal) closeProfileModal();
+                if (event.target == scannerModal) closeScannerModal();
+            });
+
+            // Start Live Truck Simulation
+            initTruckSimulation();
+        });
+
+        // Load profile data
+        function loadUserProfile() {
+            if (!currentUser) return;
+
+            // Refresh user data from database to ensure points are up to date
+            // (Session data might be stale if points were awarded by background processes)
+            const users = JSON.parse(localStorage.getItem('ecowaste_users') || '[]');
+            const freshUser = users.find(u => u.username === currentUser.username) || currentUser;
+
+            // If points changed, update the session storage too so next reload is fast & correct
+            if (freshUser.points !== currentUser.points) {
+                localStorage.setItem(STORAGE_KEYS.CURRENT_USER, JSON.stringify(freshUser));
+            }
+
+            document.getElementById('user-welcome-name').textContent = freshUser.fullname || freshUser.username;
+            document.getElementById('profile-name').textContent = freshUser.fullname || freshUser.username;
+            document.getElementById('profile-username').textContent = '@' + freshUser.username;
+            document.getElementById('profile-email').textContent = freshUser.email || 'Not set';
+
+            // Gamification Data - Self-Healing Logic
+            // Recalculate points based on actual history to ensure consistency
+            const resolvedCount = userComplaints.filter(c => c.status === 'Resolved').length;
+            const basePoints = 25; // Starting points for resident
+            const calculatedPoints = basePoints + (resolvedCount * 50);
+
+            // Update user if mismatch found
+            if (freshUser.points !== calculatedPoints) {
+                console.log(`Fixing points mismatch: ${freshUser.points} -> ${calculatedPoints}`);
+                freshUser.points = calculatedPoints;
+
+                // Save to DB
+                const index = users.findIndex(u => u.username === freshUser.username);
+                if (index !== -1) {
+                    users[index].points = calculatedPoints;
+                    localStorage.setItem('ecowaste_users', JSON.stringify(users));
+                }
+                // Save to Session
+                localStorage.setItem(STORAGE_KEYS.CURRENT_USER, JSON.stringify(freshUser));
+                currentUser = freshUser; // Update local reference
+            }
+
+            const points = calculatedPoints;
+            const levelData = getLevel(points);
+
+            document.getElementById('user-points').textContent = points;
+            document.getElementById('user-level').textContent = levelData.title;
+            document.getElementById('next-level-points').textContent = levelData.nextLevel + ' pts';
+
+            // Calculate progress bar width
+            // Assuming previous level threshold is 0 for simplicity, or we can improve logic
+            // Percentage = (points / nextLevel) * 100
+            const progress = Math.min((points / levelData.nextLevel) * 100, 100);
+            document.getElementById('points-progress').style.width = progress + '%';
+
+            // Set avatar initial
+            const initial = (freshUser.fullname || freshUser.username).charAt(0).toUpperCase();
+            document.getElementById('profile-avatar').textContent = initial;
+
+            // Generate a random join date if not exists or use current date for demo
+            const joinDate = freshUser.createdAt ? new Date(freshUser.createdAt) : new Date();
+            document.getElementById('member-since').textContent = joinDate.toLocaleDateString('en-US', { month: 'short', year: 'numeric' });
+        }
+
+        function loadLeaderboard() {
+            const leaderboard = getLeaderboard();
+            const container = document.getElementById('leaderboard-list');
+
+            if (leaderboard.length === 0) {
+                container.innerHTML = '<div style="padding: var(--spacing-md); text-align: center; color: var(--color-text-secondary);">No active residents yet</div>';
+                return;
+            }
+
+            let html = '';
+            leaderboard.forEach((user, index) => {
+                const isCurrentUser = user.username === currentUser.username;
+                const medal = index === 0 ? '🥇' : (index === 1 ? '🥈' : (index === 2 ? '🥉' : ''));
+
+                html += `
+                    <div class="leaderboard-item ${isCurrentUser ? 'current-user' : ''}">
+                        <div style="display: flex; align-items: center; gap: 10px;">
+                            <span style="font-weight: 600; width: 20px; text-align: center;">${index + 1}</span>
+                            <span>${user.fullname || user.username} ${medal}</span>
+                        </div>
+                        <span style="font-weight: 600; color: var(--color-primary);">${user.points || 0} pts</span>
+                    </div>
+                `;
+            });
+
+            container.innerHTML = html;
+        }
+
+        // Load activity feed
+        function loadUserComplaints() {
+            const allComplaints = getAllComplaints();
+            // Filter complaints from this user
+            userComplaints = allComplaints.filter(c => c.submittedBy === currentUser.username);
+
+            // Sort by date (newest first)
+            userComplaints.sort((a, b) => new Date(b.submittedAt) - new Date(a.submittedAt));
+
+            updateStats();
+            renderComplaints();
+        }
+
+        // Update stats counters
+        function updateStats() {
+            const activeCount = userComplaints.filter(c => c.status !== 'Resolved').length;
+            const resolvedCount = userComplaints.filter(c => c.status === 'Resolved').length;
+
+            document.getElementById('active-reports-count').textContent = activeCount;
+            document.getElementById('total-resolved-count').textContent = resolvedCount;
+        }
+
+        // Render complaints list
+        function renderComplaints() {
+            const container = document.getElementById('activity-feed');
+            container.innerHTML = '';
+
+            const filtered = currentFilter === 'all'
+                ? userComplaints
+                : userComplaints.filter(c => c.status === currentFilter);
+
+            if (filtered.length === 0) {
+                container.innerHTML = `
+                    <div class="empty-state">
+                        <i class="fas fa-check-circle" style="font-size: 3rem; color: var(--color-text-secondary); opacity: 0.5; margin-bottom: var(--spacing-md);"></i>
+                        <h3>No activity found</h3>
+                        <p>You haven't submitted any ${currentFilter !== 'all' ? currentFilter.toLowerCase() : ''} reports yet.</p>
+                        ${currentFilter === 'all' ? '<button class="btn btn-primary" onclick="openReportModal()" style="margin-top: var(--spacing-md);">Report Your First Issue</button>' : ''}
+                    </div>
+                `;
+                return;
+            }
+
+            filtered.forEach(complaint => {
+                const statusClass = complaint.status === 'Resolved' ? 'status-resolved' :
+                    (complaint.status === 'In Progress' ? 'status-progress' : 'status-pending');
+
+                const date = new Date(complaint.submittedAt).toLocaleDateString();
+
+                const item = document.createElement('div');
+                item.className = 'activity-item';
+                item.innerHTML = `
+                    <div class="activity-icon">
+                        <i class="fas ${getIconForWasteType(complaint.wasteType)}"></i>
+                    </div>
+                    <div style="flex: 1;">
+                        <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 4px;">
+                            <h4 style="margin: 0; font-size: 1rem;">${complaint.wasteType} Issue</h4>
+                            <span class="status-badge ${statusClass}">${complaint.status}</span>
+                        </div>
+                        <p style="margin: 0 0 4px 0; color: var(--color-text-secondary); font-size: 0.9rem;">
+                            <i class="fas fa-map-marker-alt" style="font-size: 0.8rem;"></i> ${complaint.location}
+                        </p>
+                        <p style="margin: 0 0 8px 0; font-size: 0.95rem;">${complaint.description}</p>
+                        <div style="font-size: 0.8rem; color: var(--color-text-secondary);">
+                            ID: #${complaint.id.split('-')[2]} • Submitted on ${date}
+                        </div>
+                    </div>
+                `;
+                container.appendChild(item);
+            });
+        }
+
+        function getIconForWasteType(type) {
+            switch (type) {
+                case 'Biodegradable': return 'fa-leaf';
+                case 'Non-Biodegradable': return 'fa-trash';
+                case 'Recyclable': return 'fa-recycle';
+                case 'Hazardous': return 'fa-biohazard';
+                default: return 'fa-exclamation-triangle';
+            }
+        }
+
+        // Filter functionality
+        // Filter functionality
+        function filterComplaints(status, btn) {
+            currentFilter = status;
+
+            // Update buttons
+            document.querySelectorAll('.filter-btn').forEach(b => {
+                b.classList.remove('active');
+            });
+
+            btn.classList.add('active');
+
+            renderComplaints();
+        }
+
+        // Modal functions
+        function openReportModal() {
+            document.getElementById('report-modal').classList.add('active');
+        }
+
+        function closeReportModal() {
+            document.getElementById('report-modal').classList.remove('active');
+            clearForm('complaint-form');
+            document.getElementById('image-preview-container').innerHTML = `
+                <i class="fas fa-cloud-upload-alt" style="font-size: 2rem; color: var(--color-text-secondary); margin-bottom: var(--spacing-sm);"></i>
+                <p style="color: var(--color-text-secondary); margin: 0;">Click to upload photo</p>
+            `;
+        }
+
+        function openEditProfileModal() {
+            document.getElementById('edit-fullname').value = currentUser.fullname || '';
+            document.getElementById('edit-email').value = currentUser.email || '';
+            document.getElementById('profile-modal').classList.add('active');
+        }
+
+        function closeProfileModal() {
+            document.getElementById('profile-modal').classList.remove('active');
+        }
+
+        // Image Preview
+        function previewImage(input) {
+            const container = document.getElementById('image-preview-container');
+
+            if (input.files && input.files[0]) {
+                const reader = new FileReader();
+
+                reader.onload = function (e) {
+                    container.innerHTML = `
+                        <img src="${e.target.result}" style="max-width: 100%; max-height: 200px; border-radius: var(--radius-sm);">
+                        <p style="margin-top: 8px; font-size: 0.8rem; color: var(--color-text-secondary); Click to change</p>
+                    `;
+                }
+
+                reader.readAsDataURL(input.files[0]);
+            }
+        }
+
+        // Handle report submission
+        document.getElementById('complaint-form').addEventListener('submit', function (e) {
+            e.preventDefault();
+
+            if (!validateForm('complaint-form')) return;
+
+            // Gather data
+            const complaintData = {
+                location: document.getElementById('location').value,
+                wasteType: document.getElementById('waste-type').value,
+                description: document.getElementById('description').value,
+                photo: null // In a real app we'd upload this
+            };
+
+            // Check for photo
+            const photoInput = document.getElementById('photo');
+            if (photoInput.files && photoInput.files[0]) {
+                handleImageUpload(photoInput, function (dataUrl) {
+                    complaintData.photo = dataUrl;
+                    saveAndRefresh(complaintData);
+                });
+            } else {
+                saveAndRefresh(complaintData);
+            }
+        });
+
+        function saveAndRefresh(data) {
+            saveComplaint(data);
+
+            // Close modal and show success
+            closeReportModal();
+            showAlert('Report submitted successfully!', 'success');
+
+            // Refresh data
+            loadUserComplaints();
+        }
+
+        // Handle profile update
+        document.getElementById('profile-form').addEventListener('submit', function (e) {
+            e.preventDefault();
+
+            const fullname = document.getElementById('edit-fullname').value;
+            const email = document.getElementById('edit-email').value;
+            const currentPass = document.getElementById('current-password').value;
+            const newPass = document.getElementById('new-password').value;
+
+            // In a real app, we would validate password and send to backend
+            // Here we just update local storage
+
+            // Update user object
+            const updatedUser = { ...currentUser };
+            updatedUser.fullname = fullname;
+            updatedUser.email = email;
+
+            // Update in users list
+            const users = JSON.parse(localStorage.getItem('ecowaste_users') || '[]');
+            const userIndex = users.findIndex(u => u.username === currentUser.username);
+
+            if (userIndex !== -1) {
+                users[userIndex].fullname = fullname;
+                users[userIndex].email = email;
+
+                if (newPass && currentPass) {
+                    // Start of password change logic (simplified)
+                    if (users[userIndex].password === currentPass) {
+                        users[userIndex].password = newPass;
+                    } else {
+                        showAlert('Current password is incorrect', 'error');
+                        return;
+                    }
+                }
+
+                localStorage.setItem('ecowaste_users', JSON.stringify(users));
+
+                // Update current user session
+                localStorage.setItem(STORAGE_KEYS.CURRENT_USER, JSON.stringify(updatedUser));
+
+                showAlert('Profile updated successfully!', 'success');
+                closeProfileModal();
+                loadUserProfile(); // Refresh display
+            } else {
+                // Handle demo user (admin/resident default) which might not be in users array
+                // For demo simplicity, just update the session
+                updatedUser.fullname = fullname;
+                updatedUser.email = email;
+                localStorage.setItem(STORAGE_KEYS.CURRENT_USER, JSON.stringify(updatedUser));
+
+                showAlert('Profile updated (Session only for demo user)', 'success');
+                closeProfileModal();
+                loadUserProfile();
+            }
+        });
+
+        // ==========================================
+        // Smart Scanner Logic
+        // ==========================================
+        function openSmartScanner() {
+            document.getElementById('scanner-modal').classList.add('active');
+        }
+
+        function closeScannerModal() {
+            document.getElementById('scanner-modal').classList.remove('active');
+            resetScanner();
+        }
+
+        function resetScanner() {
+            document.getElementById('scan-preview').style.display = 'block';
+            document.getElementById('scan-img-display').style.display = 'none';
+            document.getElementById('scan-img-display').src = '';
+            document.getElementById('scanner-overlay').classList.remove('active');
+            document.getElementById('scan-result').style.display = 'none';
+            document.getElementById('scan-action-btn').style.display = 'none';
+            document.getElementById('scan-photo').value = '';
+        }
+
+        function handleScanImage(input) {
+            if (input.files && input.files[0]) {
+                const reader = new FileReader();
+
+                reader.onload = function (e) {
+                    // Show Image
+                    document.getElementById('scan-preview').style.display = 'none';
+                    const imgDisplay = document.getElementById('scan-img-display');
+                    imgDisplay.src = e.target.result;
+                    imgDisplay.style.display = 'block';
+
+                    // Start Scanning Animation
+                    document.getElementById('scanner-overlay').classList.add('active');
+
+                    // Simulate AI Analysis (2 seconds)
+                    setTimeout(() => {
+                        completeScan();
+                    }, 2000);
+                }
+
+                reader.readAsDataURL(input.files[0]);
+            }
+        }
+
+        function completeScan() {
+            // Stop Animation
+            document.getElementById('scanner-overlay').classList.remove('active');
+
+            // Show Result (Simulated)
+            const mockResults = [
+                { name: 'Plastic Water Bottle', confidence: '98%', bin: 'Recyclable (Blue Bin)', tip: 'Please empty liquids and crush to save space.' },
+                { name: 'Cardboard Box', confidence: '95%', bin: 'Recyclable (Blue Bin)', tip: 'Flatten the box before recycling.' },
+                { name: 'Apple Core', confidence: '99%', bin: 'Biodegradable (Green Bin)', tip: 'Great for composting!' },
+                { name: 'Battery', confidence: '92%', bin: 'Hazardous (Red Bin)', tip: 'Do not throw in regular trash. Keep separate.' }
+            ];
+
+            const randomResult = mockResults[Math.floor(Math.random() * mockResults.length)];
+
+            document.getElementById('scan-item-name').textContent = randomResult.name;
+            document.getElementById('scan-confidence').textContent = randomResult.confidence;
+            document.getElementById('scan-bin').textContent = randomResult.bin;
+            document.getElementById('scan-tip').textContent = randomResult.tip;
+
+            document.getElementById('scan-result').style.display = 'block';
+            document.getElementById('scan-action-btn').style.display = 'block';
+        }
+
+        // ==========================================
+        // Live Truck Simulation
+        // ==========================================
+        function initTruckSimulation() {
+            const locations = [
+                'North District Main Rd',
+                'Approaching Your Street',
+                '2 Stops Away',
+                '1 Stop Away',
+                'Arrived at Your Location'
+            ];
+
+            let stage = 0;
+            const locationEl = document.getElementById('truck-location');
+            const etaEl = document.getElementById('truck-eta');
+
+            // Update every 10 seconds for demo
+            setInterval(() => {
+                stage = (stage + 1) % locations.length;
+
+                locationEl.style.opacity = 0;
+                setTimeout(() => {
+                    locationEl.textContent = locations[stage];
+
+                    // Update ETA
+                    let eta = 15 - (stage * 3);
+                    if (eta <= 0) eta = 'Now';
+                    else eta = eta + ' mins';
+
+                    etaEl.textContent = stage === 4 ? 'Here Now!' : `Arriving in ~${eta}`;
+
+                    locationEl.style.opacity = 1;
+                }, 300);
+
+            }, 8000); // Fast cycle for demo
+        }
+    </script>
+</body>
+
+</html>

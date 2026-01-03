@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Login - EcoWaste</title>
+
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap"
+        rel="stylesheet">
+
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <!-- Custom Styles -->
+    <link rel="stylesheet" href="styles.css">
+</head>
+
+<body>
+    <!-- Alert Container -->
+    <div id="alert-container" style="position: fixed; top: 20px; right: 20px; z-index: 9999; max-width: 400px;"></div>
+
+    <!-- Navigation Bar -->
+    <nav class="navbar">
+        <div class="container navbar-container">
+            <a href="index.html" class="navbar-brand">
+                <i class="fas fa-recycle"></i>
+                EcoWaste
+            </a>
+            <ul class="navbar-menu">
+                <li><a href="index.html" class="navbar-link">Home</a></li>
+                <li><a href="resident-login.html" class="navbar-link">Resident Portal</a></li>
+                <li><a href="admin-login.html" class="navbar-link active">Admin Portal</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <!-- Login Section -->
+    <section class="section"
+        style="min-height: 80vh; display: flex; align-items: center; background: linear-gradient(135deg, rgba(22, 160, 133, 0.05) 0%, rgba(19, 141, 117, 0.05) 100%);">
+        <div class="container">
+            <div style="max-width: 500px; margin: 0 auto;">
+                <div class="card" style="padding: var(--spacing-xl);">
+                    <div class="card-header" style="text-align: center; border-bottom: none;">
+                        <div style="font-size: 4rem; color: var(--color-secondary); margin-bottom: var(--spacing-md);">
+                            <i class="fas fa-user-shield"></i>
+                        </div>
+                        <h2 class="card-title" style="margin-bottom: var(--spacing-xs);">Admin Login</h2>
+                        <p style="color: var(--color-text-secondary); margin-bottom: var(--spacing-lg);">
+                            Access the administrative dashboard to monitor and manage complaints
+                        </p>
+                    </div>
+
+                    <div class="card-body">
+                        <form id="login-form">
+                            <div class="form-group">
+                                <label for="username" class="form-label">
+                                    <i class="fas fa-user-shield"></i> Admin Username
+                                </label>
+                                <input type="text" id="username" class="form-input" placeholder="Enter admin username"
+                                    required autocomplete="username">
+                                <div class="form-error"></div>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="password" class="form-label">
+                                    <i class="fas fa-lock"></i> Password
+                                </label>
+                                <input type="password" id="password" class="form-input"
+                                    placeholder="Enter admin password" required autocomplete="current-password">
+                                <div class="form-error"></div>
+                            </div>
+
+                            <button type="submit" class="btn btn-secondary"
+                                style="width: 100%; margin-top: var(--spacing-md);">
+                                <i class="fas fa-sign-in-alt"></i>
+                                Access Dashboard
+                            </button>
+                        </form>
+
+                        <!-- Demo Credentials Info -->
+                        <div class="alert alert-info" style="margin-top: var(--spacing-lg); margin-bottom: 0;">
+                            <i class="fas fa-info-circle"></i>
+                            <div>
+                                <strong>Demo Credentials:</strong><br>
+                                Username: <code
+                                    style="background: rgba(0,0,0,0.1); padding: 2px 6px; border-radius: 4px;">admin</code><br>
+                                Password: <code
+                                    style="background: rgba(0,0,0,0.1); padding: 2px 6px; border-radius: 4px;">admin123</code>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="card-footer" style="text-align: center; border-top: none;">
+                        <p style="color: var(--color-text-secondary); margin: 0;">
+                            Are you a resident?
+                            <a href="resident-login.html" style="color: var(--color-primary); font-weight: 600;">Login
+                                here</a>
+                        </p>
+                    </div>
+                </div>
+
+                <!-- Security Notice -->
+                <div class="card"
+                    style="margin-top: var(--spacing-lg); background: rgba(231, 76, 60, 0.05); border: 1px solid rgba(231, 76, 60, 0.2);">
+                    <div style="display: flex; align-items: center; gap: var(--spacing-md);">
+                        <i class="fas fa-shield-alt" style="font-size: 2rem; color: var(--color-danger);"></i>
+                        <div>
+                            <h4 style="margin-bottom: var(--spacing-xs); color: var(--color-danger);">Secure Access</h4>
+                            <p style="margin: 0; font-size: var(--font-size-sm); color: var(--color-text-secondary);">
+                                This area is restricted to authorized administrators only. All access attempts are
+                                logged.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Scripts -->
+    <script src="app.js"></script>
+    <script>
+        // Check if already logged in
+        const currentUser = getCurrentUser();
+        if (currentUser && currentUser.type === 'admin') {
+            window.location.href = 'admin-dashboard.html';
+        }
+
+        // Handle login form submission
+        document.getElementById('login-form').addEventListener('submit', function (e) {
+            e.preventDefault();
+
+            const username = document.getElementById('username').value.trim();
+            const password = document.getElementById('password').value;
+
+            // Validate form
+            if (!username || !password) {
+                showAlert('Please fill in all fields', 'error');
+                return;
+            }
+
+            // Attempt login
+            const result = login(username, password, 'admin');
+
+            if (result.success) {
+                showAlert('Login successful! Redirecting to dashboard...', 'success');
+                setTimeout(() => {
+                    window.location.href = 'admin-dashboard.html';
+                }, 1000);
+            } else {
+                showAlert(result.message, 'error');
+            }
+        });
+
+        // Add enter key support
+        document.getElementById('password').addEventListener('keypress', function (e) {
+            if (e.key === 'Enter') {
+                document.getElementById('login-form').dispatchEvent(new Event('submit'));
+            }
+        });
+    </script>
+</body>
+
+</html>

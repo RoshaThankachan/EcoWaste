@@ -1,0 +1,541 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Dashboard - EcoWaste</title>
+
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap"
+        rel="stylesheet">
+
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <!-- Chart.js for visualizations -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+
+    <!-- Custom Styles -->
+    <link rel="stylesheet" href="styles.css">
+</head>
+
+<body>
+    <!-- Alert Container -->
+    <div id="alert-container" style="position: fixed; top: 20px; right: 20px; z-index: 9999; max-width: 400px;"></div>
+
+    <!-- Navigation Bar -->
+    <nav class="navbar">
+        <div class="container navbar-container">
+            <a href="index.html" class="navbar-brand">
+                <i class="fas fa-recycle"></i>
+                EcoWaste
+            </a>
+            <ul class="navbar-menu">
+                <li><a href="admin-dashboard.html" class="navbar-link active">Dashboard</a></li>
+                <li><a href="collection-schedule.html" class="navbar-link">Schedule</a></li>
+                <li>
+                    <span style="color: var(--color-text-secondary); margin-right: var(--spacing-sm);">
+                        <i class="fas fa-user-shield"></i> <span id="admin-username"></span>
+                    </span>
+                </li>
+                <li>
+                    <button onclick="logout()" class="btn btn-sm btn-danger" style="margin: 0;">
+                        <i class="fas fa-sign-out-alt"></i> Logout
+                    </button>
+                </li>
+            </ul>
+        </div>
+    </nav>
+
+    <!-- Page Header -->
+    <section style="background: var(--gradient-secondary); color: white; padding: var(--spacing-xl) 0;">
+        <div class="container">
+            <h1 style="color: white; margin-bottom: var(--spacing-sm);">
+                <i class="fas fa-tachometer-alt"></i> Admin Dashboard
+            </h1>
+            <p style="color: rgba(255, 255, 255, 0.9); font-size: var(--font-size-lg);">
+                Monitor and manage waste complaints across all areas
+            </p>
+        </div>
+    </section>
+
+    <!-- Statistics Cards -->
+    <section class="section" style="padding-top: var(--spacing-xl);">
+        <div class="container">
+            <div class="grid grid-4">
+                <div class="stat-card">
+                    <div class="stat-number" id="stat-total">0</div>
+                    <div class="stat-label">
+                        <i class="fas fa-clipboard-list"></i> Total Complaints
+                    </div>
+                </div>
+
+                <div class="stat-card" style="background: linear-gradient(135deg, #95a5a6 0%, #7f8c8d 100%);">
+                    <div class="stat-number" id="stat-pending">0</div>
+                    <div class="stat-label">
+                        <i class="fas fa-clock"></i> Pending
+                    </div>
+                </div>
+
+                <div class="stat-card" style="background: linear-gradient(135deg, #f39c12 0%, #e67e22 100%);">
+                    <div class="stat-number" id="stat-in-progress">0</div>
+                    <div class="stat-label">
+                        <i class="fas fa-spinner"></i> In Progress
+                    </div>
+                </div>
+
+                <div class="stat-card" style="background: var(--gradient-primary);">
+                    <div class="stat-number" id="stat-resolved">0</div>
+                    <div class="stat-label">
+                        <i class="fas fa-check-circle"></i> Resolved
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Charts Section -->
+    <section class="section" style="padding-top: var(--spacing-md);">
+        <div class="container">
+            <div class="grid grid-2">
+                <!-- Status Distribution Chart -->
+                <div class="card">
+                    <div class="card-header">
+                        <h3 class="card-title">
+                            <i class="fas fa-chart-pie"></i> Complaints by Status
+                        </h3>
+                    </div>
+                    <div class="card-body">
+                        <canvas id="status-chart" style="max-height: 300px;"></canvas>
+                    </div>
+                </div>
+
+                <!-- Area Distribution Chart -->
+                <div class="card">
+                    <div class="card-header">
+                        <h3 class="card-title">
+                            <i class="fas fa-chart-bar"></i> Complaints by Area
+                        </h3>
+                    </div>
+                    <div class="card-body">
+                        <canvas id="area-chart" style="max-height: 300px;"></canvas>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Filters and Search -->
+    <section class="section" style="padding-top: var(--spacing-md);">
+        <div class="container">
+            <div class="card" style="padding: var(--spacing-md);">
+                <div style="display: flex; gap: var(--spacing-md); align-items: end; flex-wrap: wrap;">
+                    <div style="flex: 1; min-width: 200px;">
+                        <label for="status-filter" class="form-label" style="margin-bottom: var(--spacing-xs);">
+                            <i class="fas fa-filter"></i> Filter by Status
+                        </label>
+                        <select id="status-filter" class="form-select">
+                            <option value="">All Statuses</option>
+                            <option value="Pending">Pending</option>
+                            <option value="In Progress">In Progress</option>
+                            <option value="Resolved">Resolved</option>
+                        </select>
+                    </div>
+
+                    <div style="flex: 1; min-width: 200px;">
+                        <label for="area-filter" class="form-label" style="margin-bottom: var(--spacing-xs);">
+                            <i class="fas fa-map-marker-alt"></i> Filter by Area
+                        </label>
+                        <select id="area-filter" class="form-select">
+                            <option value="">All Areas</option>
+                            <option value="Downtown">Downtown</option>
+                            <option value="North District">North District</option>
+                            <option value="South District">South District</option>
+                            <option value="East District">East District</option>
+                            <option value="West District">West District</option>
+                            <option value="Suburban Area">Suburban Area</option>
+                            <option value="Industrial Zone">Industrial Zone</option>
+                        </select>
+                    </div>
+
+                    <div style="flex: 1; min-width: 200px;">
+                        <label for="search-input" class="form-label" style="margin-bottom: var(--spacing-xs);">
+                            <i class="fas fa-search"></i> Search
+                        </label>
+                        <input type="text" id="search-input" class="form-input"
+                            placeholder="Search by ID or description">
+                    </div>
+
+                    <button onclick="resetFilters()" class="btn btn-outline">
+                        <i class="fas fa-redo"></i>
+                        Reset
+                    </button>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Complaints Table -->
+    <section class="section" style="padding-top: var(--spacing-md);">
+        <div class="container">
+            <div class="card">
+                <div class="card-header">
+                    <h2 class="card-title">
+                        <i class="fas fa-list"></i> All Complaints
+                    </h2>
+                </div>
+                <div class="card-body" style="padding: 0;">
+                    <div class="table-container">
+                        <table class="table">
+                            <thead>
+                                <tr>
+                                    <th>ID</th>
+                                    <th>Location</th>
+                                    <th>Waste Type</th>
+                                    <th>Description</th>
+                                    <th>Submitted By</th>
+                                    <th>Date</th>
+                                    <th>Status</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody id="complaints-table">
+                                <!-- Complaints will be dynamically inserted here -->
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <!-- No Results Message -->
+                    <div id="no-complaints" style="display: none; text-align: center; padding: var(--spacing-xl);">
+                        <div
+                            style="font-size: 3rem; color: var(--color-text-secondary); margin-bottom: var(--spacing-md);">
+                            <i class="fas fa-inbox"></i>
+                        </div>
+                        <h3 style="color: var(--color-text-secondary);">No complaints found</h3>
+                        <p style="color: var(--color-text-secondary);">
+                            Try adjusting your filters or check back later
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Complaint Detail Modal -->
+    <div id="detail-modal"
+        style="display: none; position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0, 0, 0, 0.5); z-index: var(--z-modal); overflow-y: auto; padding: var(--spacing-lg);">
+        <div style="max-width: 600px; margin: var(--spacing-xl) auto;">
+            <div class="card" style="padding: var(--spacing-xl);">
+                <div
+                    style="display: flex; justify-content: space-between; align-items: center; margin-bottom: var(--spacing-lg);">
+                    <h2 style="margin: 0;">
+                        <i class="fas fa-info-circle"></i> Complaint Details
+                    </h2>
+                    <button onclick="closeModal()" class="btn btn-outline btn-sm">
+                        <i class="fas fa-times"></i>
+                    </button>
+                </div>
+
+                <div id="modal-content">
+                    <!-- Content will be dynamically inserted -->
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Scripts -->
+    <script src="app.js"></script>
+    <script>
+        // Require admin authentication
+        const user = requireAuth('admin');
+        if (user) {
+            document.getElementById('admin-username').textContent = user.username;
+        }
+
+        let allComplaints = [];
+        let filteredComplaints = [];
+        let statusChart, areaChart;
+
+        // Load and display all data
+        function loadDashboard() {
+            allComplaints = getAllComplaints();
+            filteredComplaints = allComplaints;
+
+            updateStatistics();
+            updateCharts();
+            displayComplaints(filteredComplaints);
+        }
+
+        // Update statistics cards
+        function updateStatistics() {
+            const stats = getComplaintStats();
+
+            document.getElementById('stat-total').textContent = stats.total;
+            document.getElementById('stat-pending').textContent = stats.pending;
+            document.getElementById('stat-in-progress').textContent = stats.inProgress;
+            document.getElementById('stat-resolved').textContent = stats.resolved;
+        }
+
+        // Update charts
+        function updateCharts() {
+            const stats = getComplaintStats();
+
+            // Status Chart
+            const statusCtx = document.getElementById('status-chart').getContext('2d');
+            if (statusChart) statusChart.destroy();
+
+            statusChart = new Chart(statusCtx, {
+                type: 'doughnut',
+                data: {
+                    labels: ['Pending', 'In Progress', 'Resolved'],
+                    datasets: [{
+                        data: [stats.pending, stats.inProgress, stats.resolved],
+                        backgroundColor: ['#95a5a6', '#f39c12', '#2ecc71'],
+                        borderWidth: 0
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: true,
+                    plugins: {
+                        legend: {
+                            position: 'bottom'
+                        }
+                    }
+                }
+            });
+
+            // Area Chart
+            const areaCtx = document.getElementById('area-chart').getContext('2d');
+            if (areaChart) areaChart.destroy();
+
+            const areaLabels = Object.keys(stats.byArea);
+            const areaData = Object.values(stats.byArea);
+
+            areaChart = new Chart(areaCtx, {
+                type: 'bar',
+                data: {
+                    labels: areaLabels,
+                    datasets: [{
+                        label: 'Complaints',
+                        data: areaData,
+                        backgroundColor: '#16a085',
+                        borderRadius: 8
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: true,
+                    plugins: {
+                        legend: {
+                            display: false
+                        }
+                    },
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            ticks: {
+                                stepSize: 1
+                            }
+                        }
+                    }
+                }
+            });
+        }
+
+        // Display complaints in table
+        function displayComplaints(complaints) {
+            const table = document.getElementById('complaints-table');
+            const noComplaints = document.getElementById('no-complaints');
+
+            if (complaints.length === 0) {
+                table.innerHTML = '';
+                noComplaints.style.display = 'block';
+                return;
+            }
+
+            noComplaints.style.display = 'none';
+
+            table.innerHTML = complaints.map(complaint => `
+        <tr>
+          <td><strong>${complaint.id}</strong></td>
+          <td><i class="fas fa-map-marker-alt" style="color: var(--color-primary);"></i> ${complaint.location}</td>
+          <td>${complaint.wasteType}</td>
+          <td style="max-width: 200px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">
+            ${complaint.description}
+          </td>
+          <td>${complaint.submittedBy}</td>
+          <td>${formatDate(complaint.submittedAt)}</td>
+          <td>
+            <span class="badge badge-${getStatusClass(complaint.status)}">
+              ${complaint.status}
+            </span>
+          </td>
+          <td>
+            <div style="display: flex; gap: var(--spacing-xs);">
+              <button onclick="viewDetails('${complaint.id}')" class="btn btn-sm btn-primary" title="View Details">
+                <i class="fas fa-eye"></i>
+              </button>
+              <select onchange="updateStatus('${complaint.id}', this.value)" class="form-select" style="padding: var(--spacing-xs); font-size: var(--font-size-sm); min-width: 120px;">
+                <option value="">Change Status</option>
+                <option value="Pending" ${complaint.status === 'Pending' ? 'selected' : ''}>Pending</option>
+                <option value="In Progress" ${complaint.status === 'In Progress' ? 'selected' : ''}>In Progress</option>
+                <option value="Resolved" ${complaint.status === 'Resolved' ? 'selected' : ''}>Resolved</option>
+              </select>
+            </div>
+          </td>
+        </tr>
+      `).join('');
+        }
+
+        // Get status badge class
+        function getStatusClass(status) {
+            switch (status) {
+                case 'Pending': return 'pending';
+                case 'In Progress': return 'in-progress';
+                case 'Resolved': return 'resolved';
+                default: return 'pending';
+            }
+        }
+
+        // Update complaint status
+        function updateStatus(complaintId, newStatus) {
+            if (!newStatus) return;
+
+            if (updateComplaintStatus(complaintId, newStatus)) {
+                showAlert(`Complaint ${complaintId} status updated to ${newStatus}`, 'success');
+                loadDashboard();
+            } else {
+                showAlert('Failed to update status', 'error');
+            }
+        }
+
+        // View complaint details
+        function viewDetails(complaintId) {
+            const complaint = allComplaints.find(c => c.id === complaintId);
+            if (!complaint) return;
+
+            const modalContent = document.getElementById('modal-content');
+            modalContent.innerHTML = `
+        <div style="display: grid; gap: var(--spacing-md);">
+          <div>
+            <strong style="color: var(--color-text-secondary);">Complaint ID:</strong>
+            <div style="font-size: var(--font-size-lg); color: var(--color-primary); font-weight: 600;">${complaint.id}</div>
+          </div>
+          
+          <div>
+            <strong style="color: var(--color-text-secondary);">Location:</strong>
+            <div><i class="fas fa-map-marker-alt" style="color: var(--color-primary);"></i> ${complaint.location}</div>
+          </div>
+          
+          <div>
+            <strong style="color: var(--color-text-secondary);">Waste Type:</strong>
+            <div>${complaint.wasteType}</div>
+          </div>
+          
+          <div>
+            <strong style="color: var(--color-text-secondary);">Description:</strong>
+            <div>${complaint.description}</div>
+          </div>
+          
+          <div>
+            <strong style="color: var(--color-text-secondary);">Submitted By:</strong>
+            <div>${complaint.submittedBy}</div>
+          </div>
+          
+          <div>
+            <strong style="color: var(--color-text-secondary);">Submitted At:</strong>
+            <div>${formatDate(complaint.submittedAt)}</div>
+          </div>
+          
+          <div>
+            <strong style="color: var(--color-text-secondary);">Last Updated:</strong>
+            <div>${formatDate(complaint.updatedAt)}</div>
+          </div>
+          
+          <div>
+            <strong style="color: var(--color-text-secondary);">Status:</strong>
+            <div>
+              <span class="badge badge-${getStatusClass(complaint.status)}" style="font-size: var(--font-size-base);">
+                ${complaint.status}
+              </span>
+            </div>
+          </div>
+          
+          ${complaint.photo ? `
+            <div>
+              <strong style="color: var(--color-text-secondary);">Photo:</strong>
+              <div style="margin-top: var(--spacing-sm);">
+                <img src="${complaint.photo}" alt="Complaint photo" style="max-width: 100%; border-radius: var(--radius-md); box-shadow: var(--shadow-md);">
+              </div>
+            </div>
+          ` : ''}
+        </div>
+      `;
+
+            document.getElementById('detail-modal').style.display = 'block';
+        }
+
+        // Close modal
+        function closeModal() {
+            document.getElementById('detail-modal').style.display = 'none';
+        }
+
+        // Filter complaints
+        function applyFilters() {
+            const statusFilter = document.getElementById('status-filter').value;
+            const areaFilter = document.getElementById('area-filter').value;
+            const searchTerm = document.getElementById('search-input').value.toLowerCase();
+
+            filteredComplaints = allComplaints.filter(complaint => {
+                const matchesStatus = !statusFilter || complaint.status === statusFilter;
+                const matchesArea = !areaFilter || complaint.location === areaFilter;
+                const matchesSearch = !searchTerm ||
+                    complaint.id.toLowerCase().includes(searchTerm) ||
+                    complaint.description.toLowerCase().includes(searchTerm);
+
+                return matchesStatus && matchesArea && matchesSearch;
+            });
+
+            displayComplaints(filteredComplaints);
+        }
+
+        // Reset filters
+        function resetFilters() {
+            document.getElementById('status-filter').value = '';
+            document.getElementById('area-filter').value = '';
+            document.getElementById('search-input').value = '';
+            filteredComplaints = allComplaints;
+            displayComplaints(filteredComplaints);
+        }
+
+        // Add event listeners for filters
+        document.getElementById('status-filter').addEventListener('change', applyFilters);
+        document.getElementById('area-filter').addEventListener('change', applyFilters);
+        document.getElementById('search-input').addEventListener('input', debounce(applyFilters, 300));
+
+        // Close modal when clicking outside
+        document.getElementById('detail-modal').addEventListener('click', function (e) {
+            if (e.target === this) {
+                closeModal();
+            }
+        });
+
+        // Load dashboard on page load
+        window.addEventListener('load', () => {
+            loadDashboard();
+
+            // Add fade-in animation
+            const cards = document.querySelectorAll('.card, .stat-card');
+            cards.forEach((card, index) => {
+                card.style.opacity = '0';
+                card.style.animation = `fadeInUp 0.6s ease-out ${index * 0.05}s forwards`;
+            });
+        });
+    </script>
+</body>
+
+</html>

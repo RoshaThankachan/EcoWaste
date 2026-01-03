@@ -1,0 +1,251 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Report Waste Issue - EcoWaste</title>
+
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap"
+        rel="stylesheet">
+
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <!-- Custom Styles -->
+    <link rel="stylesheet" href="styles.css">
+</head>
+
+<body>
+    <!-- Alert Container -->
+    <div id="alert-container" style="position: fixed; top: 20px; right: 20px; z-index: 9999; max-width: 400px;"></div>
+
+    <!-- Navigation Bar -->
+    <nav class="navbar">
+        <div class="container navbar-container">
+            <a href="index.html" class="navbar-brand">
+                <i class="fas fa-recycle"></i>
+                EcoWaste
+            </a>
+            <ul class="navbar-menu">
+                <li><a href="index.html" class="navbar-link">Home</a></li>
+                <li><a href="complaint-form.html" class="navbar-link active">Report Issue</a></li>
+                <li><a href="collection-schedule.html" class="navbar-link">Collection Schedule</a></li>
+                <li>
+                    <button onclick="logout()" class="btn btn-sm btn-danger" style="margin: 0;">
+                        <i class="fas fa-sign-out-alt"></i> Logout
+                    </button>
+                </li>
+            </ul>
+        </div>
+    </nav>
+
+    <!-- Page Header -->
+    <section
+        style="background: var(--gradient-primary); color: white; padding: var(--spacing-xl) 0; text-align: center;">
+        <div class="container">
+            <h1 style="color: white; margin-bottom: var(--spacing-sm);">
+                <i class="fas fa-exclamation-circle"></i> Report Waste Issue
+            </h1>
+            <p style="color: rgba(255, 255, 255, 0.9); font-size: var(--font-size-lg);">
+                Help us keep your city clean by reporting waste management issues
+            </p>
+        </div>
+    </section>
+
+    <!-- Complaint Form Section -->
+    <section class="section">
+        <div class="container">
+            <div style="max-width: 800px; margin: 0 auto;">
+                <div class="card" style="padding: var(--spacing-xl);">
+                    <div class="card-header">
+                        <h2 class="card-title">
+                            <i class="fas fa-file-alt"></i> Complaint Details
+                        </h2>
+                        <p style="color: var(--color-text-secondary);">
+                            Please provide detailed information about the waste issue
+                        </p>
+                    </div>
+
+                    <div class="card-body">
+                        <form id="complaint-form">
+                            <!-- Location -->
+                            <div class="form-group">
+                                <label for="location" class="form-label">
+                                    <i class="fas fa-map-marker-alt"></i> Location / Area *
+                                </label>
+                                <select id="location" class="form-select" required>
+                                    <option value="">Select your area</option>
+                                    <option value="Downtown">Downtown</option>
+                                    <option value="North District">North District</option>
+                                    <option value="South District">South District</option>
+                                    <option value="East District">East District</option>
+                                    <option value="West District">West District</option>
+                                    <option value="Suburban Area">Suburban Area</option>
+                                    <option value="Industrial Zone">Industrial Zone</option>
+                                </select>
+                                <div class="form-error"></div>
+                            </div>
+
+                            <!-- Waste Type -->
+                            <div class="form-group">
+                                <label for="waste-type" class="form-label">
+                                    <i class="fas fa-trash-alt"></i> Type of Waste *
+                                </label>
+                                <select id="waste-type" class="form-select" required>
+                                    <option value="">Select waste type</option>
+                                    <option value="Biodegradable">Biodegradable (Food waste, garden waste)</option>
+                                    <option value="Non-Biodegradable">Non-Biodegradable (Plastic, metal, glass)</option>
+                                    <option value="Recyclable">Recyclable (Paper, cardboard, bottles)</option>
+                                    <option value="Hazardous">Hazardous (Electronics, batteries, chemicals)</option>
+                                </select>
+                                <div class="form-error"></div>
+                            </div>
+
+                            <!-- Description -->
+                            <div class="form-group">
+                                <label for="description" class="form-label">
+                                    <i class="fas fa-align-left"></i> Description *
+                                </label>
+                                <textarea id="description" class="form-textarea"
+                                    placeholder="Describe the issue in detail (e.g., overflowing bins, uncollected waste, illegal dumping)"
+                                    required rows="5"></textarea>
+                                <div class="form-error"></div>
+                            </div>
+
+                            <!-- Photo Upload -->
+                            <div class="form-group">
+                                <label for="photo" class="form-label">
+                                    <i class="fas fa-camera"></i> Upload Photo (Optional)
+                                </label>
+                                <input type="file" id="photo" class="form-input form-file" accept="image/*">
+                                <p
+                                    style="font-size: var(--font-size-sm); color: var(--color-text-secondary); margin-top: var(--spacing-xs);">
+                                    <i class="fas fa-info-circle"></i> Adding a photo helps us resolve the issue faster
+                                </p>
+                                <div id="photo-preview" style="margin-top: var(--spacing-sm); display: none;">
+                                    <img id="preview-image"
+                                        style="max-width: 100%; max-height: 300px; border-radius: var(--radius-md); box-shadow: var(--shadow-md);"
+                                        alt="Preview">
+                                </div>
+                            </div>
+
+                            <!-- Submit Button -->
+                            <div style="display: flex; gap: var(--spacing-md); margin-top: var(--spacing-xl);">
+                                <button type="submit" class="btn btn-primary btn-lg" style="flex: 1;">
+                                    <i class="fas fa-paper-plane"></i>
+                                    Submit Complaint
+                                </button>
+                                <button type="button" onclick="clearForm('complaint-form')"
+                                    class="btn btn-outline btn-lg">
+                                    <i class="fas fa-redo"></i>
+                                    Reset
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+
+                <!-- Success Message (Hidden by default) -->
+                <div id="success-message" class="card"
+                    style="margin-top: var(--spacing-lg); display: none; background: linear-gradient(135deg, rgba(39, 174, 96, 0.1) 0%, rgba(46, 204, 113, 0.1) 100%); border: 2px solid var(--color-success);">
+                    <div style="text-align: center; padding: var(--spacing-xl);">
+                        <div style="font-size: 4rem; color: var(--color-success); margin-bottom: var(--spacing-md);">
+                            <i class="fas fa-check-circle"></i>
+                        </div>
+                        <h3 style="color: var(--color-success); margin-bottom: var(--spacing-sm);">
+                            Complaint Submitted Successfully!
+                        </h3>
+                        <p style="color: var(--color-text-secondary); margin-bottom: var(--spacing-md);">
+                            Your complaint has been registered. Our team will review it shortly.
+                        </p>
+                        <p
+                            style="font-weight: 600; color: var(--color-text-primary); margin-bottom: var(--spacing-lg);">
+                            Complaint ID: <span id="complaint-id" style="color: var(--color-primary);"></span>
+                        </p>
+                        <div style="display: flex; gap: var(--spacing-md); justify-content: center; flex-wrap: wrap;">
+                            <button onclick="submitAnother()" class="btn btn-primary">
+                                <i class="fas fa-plus"></i>
+                                Submit Another Complaint
+                            </button>
+                            <a href="collection-schedule.html" class="btn btn-secondary">
+                                <i class="fas fa-calendar-alt"></i>
+                                View Collection Schedule
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Scripts -->
+    <script src="app.js"></script>
+    <script>
+        // Require authentication
+        const user = requireAuth('resident');
+        if (!user) {
+            // Will redirect if not authenticated
+        }
+
+        // Photo preview functionality
+        document.getElementById('photo').addEventListener('change', function (e) {
+            handleImageUpload(e.target, function (imageData) {
+                document.getElementById('preview-image').src = imageData;
+                document.getElementById('photo-preview').style.display = 'block';
+            });
+        });
+
+        // Handle form submission
+        document.getElementById('complaint-form').addEventListener('submit', function (e) {
+            e.preventDefault();
+
+            // Validate form
+            if (!validateForm('complaint-form')) {
+                showAlert('Please fill in all required fields', 'error');
+                return;
+            }
+
+            // Get form data
+            const location = document.getElementById('location').value;
+            const wasteType = document.getElementById('waste-type').value;
+            const description = document.getElementById('description').value;
+            const photoInput = document.getElementById('photo');
+
+            // Prepare complaint data
+            const complaintData = {
+                location: location,
+                wasteType: wasteType,
+                description: description,
+                photo: photoInput.files.length > 0 ? document.getElementById('preview-image').src : null
+            };
+
+            // Save complaint
+            const savedComplaint = saveComplaint(complaintData);
+
+            // Show success message
+            document.getElementById('complaint-id').textContent = savedComplaint.id;
+            document.querySelector('.card').style.display = 'none';
+            document.getElementById('success-message').style.display = 'block';
+
+            // Scroll to success message
+            document.getElementById('success-message').scrollIntoView({ behavior: 'smooth', block: 'center' });
+
+            showAlert('Complaint submitted successfully!', 'success');
+        });
+
+        // Submit another complaint
+        function submitAnother() {
+            document.querySelector('.card').style.display = 'block';
+            document.getElementById('success-message').style.display = 'none';
+            clearForm('complaint-form');
+            document.getElementById('photo-preview').style.display = 'none';
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+    </script>
+</body>
+
+</html>

@@ -1,0 +1,312 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Collection Schedule - EcoWaste</title>
+
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap"
+        rel="stylesheet">
+
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <!-- Custom Styles -->
+    <link rel="stylesheet" href="styles.css">
+</head>
+
+<body>
+    <!-- Alert Container -->
+    <div id="alert-container" style="position: fixed; top: 20px; right: 20px; z-index: 9999; max-width: 400px;"></div>
+
+    <!-- Navigation Bar -->
+    <nav class="navbar">
+        <div class="container navbar-container">
+            <a href="index.html" class="navbar-brand">
+                <i class="fas fa-recycle"></i>
+                EcoWaste
+            </a>
+            <ul class="navbar-menu">
+                <li><a href="index.html" class="navbar-link">Home</a></li>
+                <li><a href="login.html" class="navbar-link">Login</a></li>
+                <li><a href="signup.html" class="navbar-link">Sign Up</a></li>
+                <li><a href="collection-schedule.html" class="navbar-link active">Collection Schedule</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <!-- Page Header -->
+    <section
+        style="background: var(--gradient-secondary); color: white; padding: var(--spacing-xl) 0; text-align: center;">
+        <div class="container">
+            <h1 style="color: white; margin-bottom: var(--spacing-sm);">
+                <i class="fas fa-calendar-alt"></i> Garbage Collection Schedule
+            </h1>
+            <p style="color: rgba(255, 255, 255, 0.9); font-size: var(--font-size-lg);">
+                View pickup schedules for all areas in the city
+            </p>
+        </div>
+    </section>
+
+    <!-- Filter Section -->
+    <section class="section" style="padding-top: var(--spacing-lg); padding-bottom: var(--spacing-md);">
+        <div class="container">
+            <div class="card" style="padding: var(--spacing-md);">
+                <div style="display: flex; gap: var(--spacing-md); align-items: center; flex-wrap: wrap;">
+                    <div style="flex: 1; min-width: 250px;">
+                        <label for="area-filter" class="form-label" style="margin-bottom: var(--spacing-xs);">
+                            <i class="fas fa-filter"></i> Filter by Area
+                        </label>
+                        <select id="area-filter" class="form-select">
+                            <option value="">All Areas</option>
+                            <option value="Downtown">Downtown</option>
+                            <option value="North District">North District</option>
+                            <option value="South District">South District</option>
+                            <option value="East District">East District</option>
+                            <option value="West District">West District</option>
+                            <option value="Suburban Area">Suburban Area</option>
+                            <option value="Industrial Zone">Industrial Zone</option>
+                        </select>
+                    </div>
+                    <button onclick="resetFilter()" class="btn btn-outline" style="margin-top: auto;">
+                        <i class="fas fa-redo"></i>
+                        Reset Filter
+                    </button>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Upcoming Collections Alert -->
+    <section class="section" style="padding-top: 0;">
+        <div class="container">
+            <div class="alert alert-info">
+                <i class="fas fa-bell"></i>
+                <div>
+                    <strong>Reminder:</strong> Please segregate your waste before collection.
+                    Biodegradable and non-biodegradable waste are collected on different days.
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Schedule Grid -->
+    <section class="section" style="padding-top: 0;">
+        <div class="container">
+            <div id="schedule-grid" class="grid grid-3">
+                <!-- Schedule cards will be dynamically inserted here -->
+            </div>
+
+            <!-- No Results Message -->
+            <div id="no-results" class="card" style="display: none; text-align: center; padding: var(--spacing-xl);">
+                <div style="font-size: 3rem; color: var(--color-text-secondary); margin-bottom: var(--spacing-md);">
+                    <i class="fas fa-search"></i>
+                </div>
+                <h3 style="color: var(--color-text-secondary);">No schedules found</h3>
+                <p style="color: var(--color-text-secondary);">
+                    Try adjusting your filter or reset to view all schedules
+                </p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Schedule Table View -->
+    <section class="section"
+        style="background: linear-gradient(135deg, rgba(46, 204, 113, 0.05) 0%, rgba(22, 160, 133, 0.05) 100%);">
+        <div class="container">
+            <h2 class="section-title">Complete Schedule Overview</h2>
+
+            <div class="table-container">
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <th><i class="fas fa-map-marker-alt"></i> Area</th>
+                            <th><i class="fas fa-calendar-day"></i> Collection Day</th>
+                            <th><i class="fas fa-clock"></i> Time</th>
+                            <th><i class="fas fa-trash"></i> Waste Type</th>
+                        </tr>
+                    </thead>
+                    <tbody id="schedule-table">
+                        <!-- Table rows will be dynamically inserted here -->
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </section>
+
+    <!-- Information Section -->
+    <section class="section">
+        <div class="container">
+            <h2 class="section-title">Waste Segregation Guidelines</h2>
+
+            <div class="grid grid-2">
+                <div class="card">
+                    <div class="card-header">
+                        <div
+                            style="font-size: 2.5rem; color: var(--color-success); text-align: center; margin-bottom: var(--spacing-sm);">
+                            <i class="fas fa-leaf"></i>
+                        </div>
+                        <h3 class="card-title text-center">Biodegradable Waste</h3>
+                    </div>
+                    <div class="card-body">
+                        <ul style="list-style: none; padding: 0;">
+                            <li style="padding: var(--spacing-xs) 0;"><i class="fas fa-check"
+                                    style="color: var(--color-success);"></i> Food scraps and leftovers</li>
+                            <li style="padding: var(--spacing-xs) 0;"><i class="fas fa-check"
+                                    style="color: var(--color-success);"></i> Garden waste and leaves</li>
+                            <li style="padding: var(--spacing-xs) 0;"><i class="fas fa-check"
+                                    style="color: var(--color-success);"></i> Paper and cardboard</li>
+                            <li style="padding: var(--spacing-xs) 0;"><i class="fas fa-check"
+                                    style="color: var(--color-success);"></i> Natural fibers</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <div class="card-header">
+                        <div
+                            style="font-size: 2.5rem; color: var(--color-danger); text-align: center; margin-bottom: var(--spacing-sm);">
+                            <i class="fas fa-ban"></i>
+                        </div>
+                        <h3 class="card-title text-center">Non-Biodegradable Waste</h3>
+                    </div>
+                    <div class="card-body">
+                        <ul style="list-style: none; padding: 0;">
+                            <li style="padding: var(--spacing-xs) 0;"><i class="fas fa-check"
+                                    style="color: var(--color-danger);"></i> Plastic bottles and bags</li>
+                            <li style="padding: var(--spacing-xs) 0;"><i class="fas fa-check"
+                                    style="color: var(--color-danger);"></i> Metal cans and containers</li>
+                            <li style="padding: var(--spacing-xs) 0;"><i class="fas fa-check"
+                                    style="color: var(--color-danger);"></i> Glass bottles and jars</li>
+                            <li style="padding: var(--spacing-xs) 0;"><i class="fas fa-check"
+                                    style="color: var(--color-danger);"></i> Synthetic materials</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Scripts -->
+    <script src="app.js"></script>
+    <script>
+        let allSchedules = [];
+
+        // Load and display schedules
+        function loadSchedules() {
+            allSchedules = getCollectionSchedule();
+            displaySchedules(allSchedules);
+            displayScheduleTable(allSchedules);
+        }
+
+        // Display schedule cards
+        function displaySchedules(schedules) {
+            const grid = document.getElementById('schedule-grid');
+            const noResults = document.getElementById('no-results');
+
+            if (schedules.length === 0) {
+                grid.innerHTML = '';
+                noResults.style.display = 'block';
+                return;
+            }
+
+            noResults.style.display = 'none';
+
+            grid.innerHTML = schedules.map(schedule => `
+        <div class="card">
+          <div class="card-header">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: var(--spacing-sm);">
+              <h3 class="card-title" style="margin: 0;">
+                <i class="fas fa-map-marker-alt" style="color: var(--color-primary);"></i>
+                ${schedule.area}
+              </h3>
+            </div>
+          </div>
+          <div class="card-body">
+            <div style="display: flex; align-items: center; gap: var(--spacing-sm); margin-bottom: var(--spacing-sm);">
+              <i class="fas fa-calendar-day" style="color: var(--color-secondary); font-size: 1.2rem;"></i>
+              <div>
+                <div style="font-size: var(--font-size-sm); color: var(--color-text-secondary);">Collection Day</div>
+                <div style="font-weight: 600; color: var(--color-text-primary);">${schedule.day}</div>
+              </div>
+            </div>
+            <div style="display: flex; align-items: center; gap: var(--spacing-sm); margin-bottom: var(--spacing-sm);">
+              <i class="fas fa-clock" style="color: var(--color-accent); font-size: 1.2rem;"></i>
+              <div>
+                <div style="font-size: var(--font-size-sm); color: var(--color-text-secondary);">Time</div>
+                <div style="font-weight: 600; color: var(--color-text-primary);">${schedule.time}</div>
+              </div>
+            </div>
+            <div style="display: flex; align-items: center; gap: var(--spacing-sm);">
+              <i class="fas fa-trash-alt" style="color: var(--color-info); font-size: 1.2rem;"></i>
+              <div>
+                <div style="font-size: var(--font-size-sm); color: var(--color-text-secondary);">Waste Type</div>
+                <div style="font-weight: 600; color: var(--color-text-primary);">${schedule.wasteType}</div>
+              </div>
+            </div>
+          </div>
+          <div class="card-footer">
+            <div class="badge ${schedule.wasteType === 'Biodegradable' ? 'badge-resolved' : 'badge-in-progress'}" style="width: 100%; justify-content: center;">
+              <i class="fas fa-${schedule.wasteType === 'Biodegradable' ? 'leaf' : 'recycle'}"></i>
+              ${schedule.wasteType}
+            </div>
+          </div>
+        </div>
+      `).join('');
+        }
+
+        // Display schedule table
+        function displayScheduleTable(schedules) {
+            const table = document.getElementById('schedule-table');
+
+            table.innerHTML = schedules.map(schedule => `
+        <tr>
+          <td><strong>${schedule.area}</strong></td>
+          <td>${schedule.day}</td>
+          <td>${schedule.time}</td>
+          <td>
+            <span class="badge ${schedule.wasteType === 'Biodegradable' ? 'badge-resolved' : 'badge-in-progress'}">
+              ${schedule.wasteType}
+            </span>
+          </td>
+        </tr>
+      `).join('');
+        }
+
+        // Filter schedules
+        document.getElementById('area-filter').addEventListener('change', function (e) {
+            const selectedArea = e.target.value;
+
+            if (selectedArea === '') {
+                displaySchedules(allSchedules);
+            } else {
+                const filtered = allSchedules.filter(s => s.area === selectedArea);
+                displaySchedules(filtered);
+            }
+        });
+
+        // Reset filter
+        function resetFilter() {
+            document.getElementById('area-filter').value = '';
+            displaySchedules(allSchedules);
+        }
+
+        // Load schedules on page load
+        window.addEventListener('load', () => {
+            loadSchedules();
+
+            // Add fade-in animation
+            const cards = document.querySelectorAll('.card');
+            cards.forEach((card, index) => {
+                card.style.opacity = '0';
+                card.style.animation = `fadeInUp 0.6s ease-out ${index * 0.05}s forwards`;
+            });
+        });
+    </script>
+</body>
+
+</html>

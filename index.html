@@ -1,0 +1,391 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="EcoWaste - Urban Solid Waste Management System">
+  <title>EcoWaste - Smart Waste Management</title>
+
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap"
+    rel="stylesheet">
+
+  <!-- Font Awesome -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+  <!-- Custom Styles -->
+  <link rel="stylesheet" href="styles.css">
+</head>
+
+<body>
+  <!-- Alert Container -->
+  <div id="alert-container" style="position: fixed; top: 20px; right: 20px; z-index: 9999; max-width: 400px;"></div>
+
+  <!-- Navigation Bar -->
+  <nav class="navbar">
+    <div class="container navbar-container">
+      <a href="index.html" class="navbar-brand">
+        <i class="fas fa-recycle"></i>
+        EcoWaste
+      </a>
+      <ul class="navbar-menu">
+        <li><a href="index.html" class="navbar-link active">Home</a></li>
+        <li><a href="login.html" class="navbar-link">Login</a></li>
+        <li><a href="signup.html" class="navbar-link">Sign Up</a></li>
+      </ul>
+    </div>
+  </nav>
+
+  <!-- Hero Section -->
+  <section class="hero"
+    style="background: linear-gradient(135deg, rgba(26, 143, 32, 0.85) 0%, rgba(19, 141, 117, 0.85) 100%), url('C:/Users/dodof/.gemini/antigravity/brain/66e27877-4e23-4394-b28d-b975cb590e7d/hero_background_1767334128887.png') center/cover; min-height: 500px; display: flex; align-items: center; position: relative;">
+    <div class="container">
+      <div class="hero-content" style="max-width: 800px; margin: 0 auto;">
+        <p
+          style="color: rgba(255, 255, 255, 0.95); font-size: var(--font-size-sm); text-transform: uppercase; letter-spacing: 2px; margin-bottom: var(--spacing-sm); animation: fadeInUp 0.6s ease-out;">
+          CLEAN AND SMART WASTE MANAGEMENT
+        </p>
+        <h1
+          style="color: white; font-size: var(--font-size-5xl); font-weight: 700; margin-bottom: var(--spacing-md); line-height: 1.2; animation: fadeInUp 0.8s ease-out 0.2s both;">
+          Your Environmental<br>Specialists
+        </h1>
+        <p
+          style="color: rgba(255, 255, 255, 0.9); font-size: var(--font-size-lg); max-width: 600px; margin: 0 auto var(--spacing-xl); animation: fadeInUp 0.8s ease-out 0.4s both;">
+          Smart urban solid waste management for a cleaner tomorrow. Report issues, track schedules, and contribute to
+          sustainability.
+        </p>
+        <div class="hero-buttons" style="animation: fadeInUp 0.8s ease-out 0.6s both;">
+          <a href="signup.html" class="btn btn-primary btn-lg"
+            style="background: white; color: var(--color-primary); box-shadow: var(--shadow-xl);">
+            <i class="fas fa-user-plus"></i>
+            Get Started
+          </a>
+          <a href="login.html" class="btn btn-outline btn-lg" style="color: white; border-color: white;">
+            <i class="fas fa-sign-in-alt"></i>
+            Login
+          </a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Services Section -->
+  <section class="section" style="background: #f8f9fa;">
+    <div class="container">
+      <h2 class="section-title"
+        style="font-size: var(--font-size-3xl); color: var(--color-text-primary); margin-bottom: var(--spacing-xl);">OUR
+        SERVICES</h2>
+
+      <div class="grid grid-4" style="gap: var(--spacing-xl);">
+        <!-- Service 1: Residential -->
+        <div class="service-card" style="text-align: center; animation: fadeInUp 0.6s ease-out;">
+          <div
+            style="width: 80px; height: 80px; margin: 0 auto var(--spacing-md); background: var(--gradient-primary); border-radius: 50%; display: flex; align-items: center; justify-content: center; box-shadow: var(--shadow-lg); transition: all var(--transition-base);"
+            class="service-icon">
+            <i class="fas fa-home" style="font-size: 2rem; color: white;"></i>
+          </div>
+          <h3
+            style="font-size: var(--font-size-lg); font-weight: 600; margin-bottom: var(--spacing-sm); color: var(--color-text-primary);">
+            Residential</h3>
+          <p style="color: var(--color-text-secondary); font-size: var(--font-size-sm); line-height: 1.6;">
+            Comprehensive waste management solutions for residential areas. Regular pickups and recycling services.
+          </p>
+        </div>
+
+        <!-- Service 2: Commercial Property -->
+        <div class="service-card" style="text-align: center; animation: fadeInUp 0.6s ease-out 0.1s both;">
+          <div
+            style="width: 80px; height: 80px; margin: 0 auto var(--spacing-md); background: var(--gradient-primary); border-radius: 50%; display: flex; align-items: center; justify-content: center; box-shadow: var(--shadow-lg); transition: all var(--transition-base);"
+            class="service-icon">
+            <i class="fas fa-building" style="font-size: 2rem; color: white;"></i>
+          </div>
+          <h3
+            style="font-size: var(--font-size-lg); font-weight: 600; margin-bottom: var(--spacing-sm); color: var(--color-text-primary);">
+            Commercial Property</h3>
+          <p style="color: var(--color-text-secondary); font-size: var(--font-size-sm); line-height: 1.6;">
+            Tailored waste solutions for offices, retail spaces, and commercial buildings with flexible schedules.
+          </p>
+        </div>
+
+        <!-- Service 3: Food and Retail -->
+        <div class="service-card" style="text-align: center; animation: fadeInUp 0.6s ease-out 0.2s both;">
+          <div
+            style="width: 80px; height: 80px; margin: 0 auto var(--spacing-md); background: var(--gradient-primary); border-radius: 50%; display: flex; align-items: center; justify-content: center; box-shadow: var(--shadow-lg); transition: all var(--transition-base);"
+            class="service-icon">
+            <i class="fas fa-utensils" style="font-size: 2rem; color: white;"></i>
+          </div>
+          <h3
+            style="font-size: var(--font-size-lg); font-weight: 600; margin-bottom: var(--spacing-sm); color: var(--color-text-primary);">
+            Food and Retail</h3>
+          <p style="color: var(--color-text-secondary); font-size: var(--font-size-sm); line-height: 1.6;">
+            Specialized organic waste management for restaurants, cafes, and food retail establishments.
+          </p>
+        </div>
+
+        <!-- Service 4: Schools -->
+        <div class="service-card" style="text-align: center; animation: fadeInUp 0.6s ease-out 0.3s both;">
+          <div
+            style="width: 80px; height: 80px; margin: 0 auto var(--spacing-md); background: var(--gradient-primary); border-radius: 50%; display: flex; align-items: center; justify-content: center; box-shadow: var(--shadow-lg); transition: all var(--transition-base);"
+            class="service-icon">
+            <i class="fas fa-school" style="font-size: 2rem; color: white;"></i>
+          </div>
+          <h3
+            style="font-size: var(--font-size-lg); font-weight: 600; margin-bottom: var(--spacing-sm); color: var(--color-text-primary);">
+            Schools</h3>
+          <p style="color: var(--color-text-secondary); font-size: var(--font-size-sm); line-height: 1.6;">
+            Educational institution waste management with recycling programs and environmental awareness.
+          </p>
+        </div>
+
+        <!-- Service 5: Government -->
+        <div class="service-card" style="text-align: center; animation: fadeInUp 0.6s ease-out 0.4s both;">
+          <div
+            style="width: 80px; height: 80px; margin: 0 auto var(--spacing-md); background: var(--gradient-primary); border-radius: 50%; display: flex; align-items: center; justify-content: center; box-shadow: var(--shadow-lg); transition: all var(--transition-base);"
+            class="service-icon">
+            <i class="fas fa-landmark" style="font-size: 2rem; color: white;"></i>
+          </div>
+          <h3
+            style="font-size: var(--font-size-lg); font-weight: 600; margin-bottom: var(--spacing-sm); color: var(--color-text-primary);">
+            Government</h3>
+          <p style="color: var(--color-text-secondary); font-size: var(--font-size-sm); line-height: 1.6;">
+            Municipal and government facility waste management services with compliance and reporting.
+          </p>
+        </div>
+
+        <!-- Service 6: Healthcare -->
+        <div class="service-card" style="text-align: center; animation: fadeInUp 0.6s ease-out 0.5s both;">
+          <div
+            style="width: 80px; height: 80px; margin: 0 auto var(--spacing-md); background: var(--gradient-primary); border-radius: 50%; display: flex; align-items: center; justify-content: center; box-shadow: var(--shadow-lg); transition: all var(--transition-base);"
+            class="service-icon">
+            <i class="fas fa-hospital" style="font-size: 2rem; color: white;"></i>
+          </div>
+          <h3
+            style="font-size: var(--font-size-lg); font-weight: 600; margin-bottom: var(--spacing-sm); color: var(--color-text-primary);">
+            Healthcare</h3>
+          <p style="color: var(--color-text-secondary); font-size: var(--font-size-sm); line-height: 1.6;">
+            Safe medical waste disposal and hazardous material handling for healthcare facilities.
+          </p>
+        </div>
+
+        <!-- Service 7: Construction -->
+        <div class="service-card" style="text-align: center; animation: fadeInUp 0.6s ease-out 0.6s both;">
+          <div
+            style="width: 80px; height: 80px; margin: 0 auto var(--spacing-md); background: var(--gradient-primary); border-radius: 50%; display: flex; align-items: center; justify-content: center; box-shadow: var(--shadow-lg); transition: all var(--transition-base);"
+            class="service-icon">
+            <i class="fas fa-hard-hat" style="font-size: 2rem; color: white;"></i>
+          </div>
+          <h3
+            style="font-size: var(--font-size-lg); font-weight: 600; margin-bottom: var(--spacing-sm); color: var(--color-text-primary);">
+            Construction</h3>
+          <p style="color: var(--color-text-secondary); font-size: var(--font-size-sm); line-height: 1.6;">
+            Construction debris removal and recycling services for building and renovation projects.
+          </p>
+        </div>
+
+        <!-- Service 8: Industrial -->
+        <div class="service-card" style="text-align: center; animation: fadeInUp 0.6s ease-out 0.7s both;">
+          <div
+            style="width: 80px; height: 80px; margin: 0 auto var(--spacing-md); background: var(--gradient-primary); border-radius: 50%; display: flex; align-items: center; justify-content: center; box-shadow: var(--shadow-lg); transition: all var(--transition-base);"
+            class="service-icon">
+            <i class="fas fa-industry" style="font-size: 2rem; color: white;"></i>
+          </div>
+          <h3
+            style="font-size: var(--font-size-lg); font-weight: 600; margin-bottom: var(--spacing-sm); color: var(--color-text-primary);">
+            Industrial</h3>
+          <p style="color: var(--color-text-secondary); font-size: var(--font-size-sm); line-height: 1.6;">
+            Large-scale industrial waste management with specialized equipment and disposal methods.
+          </p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <style>
+    .service-icon:hover {
+      transform: scale(1.1) rotate(5deg);
+      box-shadow: var(--shadow-xl), var(--shadow-glow);
+    }
+
+    .service-card:hover .service-icon {
+      transform: scale(1.1) rotate(5deg);
+    }
+  </style>
+
+  <!-- How Can We Help You Section -->
+  <section class="section">
+    <div class="container">
+      <h2 class="section-title"
+        style="font-size: var(--font-size-3xl); color: var(--color-text-primary); margin-bottom: var(--spacing-2xl);">
+        HOW CAN WE HELP YOU?</h2>
+
+      <div class="grid grid-3" style="gap: var(--spacing-xl);">
+        <!-- Request a Quote -->
+        <div class="card"
+          style="text-align: center; padding: var(--spacing-xl); transition: all var(--transition-base); cursor: pointer;"
+          onclick="window.location.href='signup.html'">
+          <div
+            style="width: 100px; height: 100px; margin: 0 auto var(--spacing-lg); background: linear-gradient(135deg, #f39c12 0%, #e67e22 100%); border-radius: 50%; display: flex; align-items: center; justify-content: center; box-shadow: var(--shadow-lg); transition: all var(--transition-base);"
+            class="help-icon">
+            <i class="fas fa-dollar-sign" style="font-size: 2.5rem; color: white;"></i>
+          </div>
+          <h3
+            style="font-size: var(--font-size-xl); font-weight: 600; margin-bottom: var(--spacing-md); color: var(--color-text-primary);">
+            Request a Quote</h3>
+          <p style="color: var(--color-text-secondary); line-height: 1.6; margin-bottom: var(--spacing-md);">
+            Get a customized waste management solution for your needs. Our team will provide competitive pricing and
+            flexible service options.
+          </p>
+          <a href="signup.html" class="btn btn-primary" style="margin-top: auto;">
+            <i class="fas fa-file-invoice-dollar"></i> Get Quote
+          </a>
+        </div>
+
+        <!-- Report an Issue -->
+        <div class="card"
+          style="text-align: center; padding: var(--spacing-xl); transition: all var(--transition-base); cursor: pointer;"
+          onclick="window.location.href='login.html'">
+          <div
+            style="width: 100px; height: 100px; margin: 0 auto var(--spacing-lg); background: var(--gradient-primary); border-radius: 50%; display: flex; align-items: center; justify-content: center; box-shadow: var(--shadow-lg); transition: all var(--transition-base);"
+            class="help-icon">
+            <i class="fas fa-exclamation-circle" style="font-size: 2.5rem; color: white;"></i>
+          </div>
+          <h3
+            style="font-size: var(--font-size-xl); font-weight: 600; margin-bottom: var(--spacing-md); color: var(--color-text-primary);">
+            Report an Issue</h3>
+          <p style="color: var(--color-text-secondary); line-height: 1.6; margin-bottom: var(--spacing-md);">
+            Found a waste management problem in your area? Report it quickly and track its resolution in real-time
+            through our portal.
+          </p>
+          <a href="login.html" class="btn btn-primary" style="margin-top: auto;">
+            <i class="fas fa-flag"></i> Report Now
+          </a>
+        </div>
+
+        <!-- View Schedule -->
+        <div class="card"
+          style="text-align: center; padding: var(--spacing-xl); transition: all var(--transition-base); cursor: pointer;"
+          onclick="window.location.href='collection-schedule.html'">
+          <div
+            style="width: 100px; height: 100px; margin: 0 auto var(--spacing-lg); background: linear-gradient(135deg, #3498db 0%, #2980b9 100%); border-radius: 50%; display: flex; align-items: center; justify-content: center; box-shadow: var(--shadow-lg); transition: all var(--transition-base);"
+            class="help-icon">
+            <i class="fas fa-calendar-alt" style="font-size: 2.5rem; color: white;"></i>
+          </div>
+          <h3
+            style="font-size: var(--font-size-xl); font-weight: 600; margin-bottom: var(--spacing-md); color: var(--color-text-primary);">
+            View Collection Schedule</h3>
+          <p style="color: var(--color-text-secondary); line-height: 1.6; margin-bottom: var(--spacing-md);">
+            Check pickup schedules for your area. Never miss a collection day with our organized schedule display and
+            notifications.
+          </p>
+          <a href="collection-schedule.html" class="btn btn-primary" style="margin-top: auto;">
+            <i class="fas fa-calendar-check"></i> View Schedule
+          </a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <style>
+    .help-icon:hover {
+      transform: scale(1.15) rotate(10deg);
+      box-shadow: var(--shadow-2xl);
+    }
+
+    .card:hover .help-icon {
+      transform: scale(1.15) rotate(10deg);
+    }
+  </style>
+
+  <!-- Statistics Section -->
+  <section class="section">
+    <div class="container">
+      <h2 class="section-title">Making a Difference</h2>
+
+      <div class="grid grid-4">
+        <div class="stat-card">
+          <div class="stat-number" id="stat-complaints">0</div>
+          <div class="stat-label">Total Complaints</div>
+        </div>
+
+        <div class="stat-card" style="background: var(--gradient-secondary);">
+          <div class="stat-number" id="stat-resolved">0</div>
+          <div class="stat-label">Issues Resolved</div>
+        </div>
+
+        <div class="stat-card" style="background: linear-gradient(135deg, #f39c12 0%, #e67e22 100%);">
+          <div class="stat-number" id="stat-areas">7</div>
+          <div class="stat-label">Areas Covered</div>
+        </div>
+
+        <div class="stat-card" style="background: linear-gradient(135deg, #3498db 0%, #2980b9 100%);">
+          <div class="stat-number" id="stat-users">100+</div>
+          <div class="stat-label">Active Users</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Call to Action Section -->
+  <section class="section" style="background: var(--gradient-hero); color: white; text-align: center;">
+    <div class="container">
+      <h2 style="color: white; margin-bottom: var(--spacing-md);">
+        Ready to Make Your City Cleaner?
+      </h2>
+      <p
+        style="color: rgba(255, 255, 255, 0.9); font-size: var(--font-size-lg); margin-bottom: var(--spacing-xl); max-width: 600px; margin-left: auto; margin-right: auto;">
+        Join thousands of residents working together to improve urban waste management.
+      </p>
+      <div class="flex-center gap-md" style="flex-wrap: wrap;">
+        <a href="login.html" class="btn btn-lg" style="background: white; color: var(--color-primary);">
+          <i class="fas fa-sign-in-alt"></i>
+          Get Started Now
+        </a>
+        <a href="collection-schedule.html" class="btn btn-outline btn-lg" style="color: white; border-color: white;">
+          <i class="fas fa-calendar"></i>
+          View Schedule
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer
+    style="background: #2c3e50; color: rgba(255, 255, 255, 0.8); padding: var(--spacing-md) 0; text-align: center;">
+    <div class="container">
+      <p style="margin: 0; font-size: var(--font-size-sm);">
+        © 2025 EcoWaste. All rights reserved.
+      </p>
+    </div>
+  </footer>
+
+  <!-- Scripts -->
+  <script src="app.js"></script>
+  <script>
+    // Initialize sample data on first load
+    initializeSampleData();
+
+    // Update statistics
+    function updateStats() {
+      const stats = getComplaintStats();
+      document.getElementById('stat-complaints').textContent = stats.total;
+      document.getElementById('stat-resolved').textContent = stats.resolved;
+    }
+
+    // Animate numbers on load
+    window.addEventListener('load', () => {
+      updateStats();
+
+      // Add fade-in animation to cards
+      const cards = document.querySelectorAll('.card');
+      cards.forEach((card, index) => {
+        card.style.opacity = '0';
+        card.style.animation = `fadeInUp 0.6s ease-out ${index * 0.1}s forwards`;
+      });
+    });
+  </script>
+</body>
+
+</html>
